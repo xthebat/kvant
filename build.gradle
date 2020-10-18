@@ -1,0 +1,53 @@
+plugins {
+    id 'maven-publish'
+    id 'org.jetbrains.kotlin.jvm' version "$kotlinVersion"
+    id 'org.jetbrains.dokka' version "$dokkaVersion"
+}
+
+group 'com.github.xthebat'
+version '0.1'
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+    jcenter()
+}
+
+dependencies {
+    implementation group: 'org.jetbrains.kotlin', name: 'kotlin-stdlib'
+    implementation group: 'org.jetbrains.kotlin', name: 'kotlin-test'
+
+    implementation group: 'com.github.inforion', name: 'kotlin-logging', version: kotlinLoggingVersion
+    implementation group: 'com.github.inforion', name: 'kotlin-extensions', version: kotlinExtensionsVersion
+
+    implementation group: 'com.fasterxml.jackson.module', name: 'jackson-module-kotlin', version: jacksonVersion
+
+    testImplementation group: 'junit', name: 'junit', version: junitVersion
+}
+
+compileKotlin.kotlinOptions.jvmTarget = "11"
+
+compileTestKotlin.kotlinOptions.jvmTarget = "11"
+
+dokkaJavadoc.configure {
+    dokkaSourceSets {
+        configureEach {
+            includeNonPublic = false
+            reportUndocumented = true
+            jdkVersion = "11"
+            skipEmptyPackages = true
+            noStdlibLink = false
+            noJdkLink = false
+        }
+    }
+}
+
+task dokkaJar(type: Jar, dependsOn: dokkaJavadoc) {
+    classifier = 'javadoc'
+    from dokkaJavadoc
+}
+
+task sourcesJar(type: Jar, dependsOn: classes) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
