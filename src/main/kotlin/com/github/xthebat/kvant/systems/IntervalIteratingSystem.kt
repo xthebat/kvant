@@ -14,7 +14,7 @@ import com.github.xthebat.kvant.common.IntervalTimer
  * @see [IntervalSystem], [IteratingSystem]
  * @since v0.1
  */
-abstract class IteratingIntervalSystem(
+abstract class IntervalIteratingSystem(
     vararg types: ComponentClass,
     interval: Float,
     priority: Int = 0

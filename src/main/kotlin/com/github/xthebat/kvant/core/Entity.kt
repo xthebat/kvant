@@ -2,8 +2,8 @@ package com.github.xthebat.kvant.core
 
 import com.github.xthebat.kvant.ComponentClass
 import com.github.xthebat.kvant.ObjectCallback
-import com.github.xthebat.kvant.interfaces.Component
 import com.github.xthebat.kvant.whileNotEmpty
+import com.github.xthebat.kvant.interfaces.Component
 import kotlin.reflect.KClass
 
 /**
@@ -15,7 +15,7 @@ import kotlin.reflect.KClass
  */
 class Entity constructor(var flags: Int = 0) : Iterable<Component> {
     companion object {
-        inline fun create(initialize: Entity.() -> Unit) = Entity().apply { initialize(this) }
+        inline fun create(initialize: Entity.() -> Unit) = Entity().apply(initialize)
     }
 
     private val components = mutableMapOf<ComponentClass, Component>()

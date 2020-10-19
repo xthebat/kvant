@@ -3,6 +3,9 @@ package com.github.xthebat.kvant.core
 import com.github.xthebat.kvant.ComponentClass
 import com.github.xthebat.kvant.managers.EntityManager
 import com.github.xthebat.kvant.common.FilteredIterator
+import com.github.xthebat.kvant.factories.ObjectFactory
+import com.github.xthebat.kvant.factories.PooledObjectFactory
+import com.github.xthebat.kvant.factories.BasicObjectFactory
 import com.github.xthebat.kvant.managers.SystemManager
 import com.github.xthebat.kvant.systems.AbstractSystem
 
@@ -12,9 +15,11 @@ import com.github.xthebat.kvant.systems.AbstractSystem
  *
  * @since v0.1
  */
-class Engine {
+class Engine(val factory: ObjectFactory) {
     companion object {
-        inline fun create(initialize: Engine.() -> Unit) = Engine().apply { initialize(this) }
+        inline fun basic(initialize: Engine.() -> Unit) = Engine(BasicObjectFactory()).apply(initialize)
+
+        inline fun pooled(initialize: Engine.() -> Unit) = Engine(PooledObjectFactory()).apply(initialize)
     }
 
     private var updating = false
@@ -30,7 +35,14 @@ class Engine {
         // Call dirty to all filtered iterators to update it internal lists for systems.
         // It should be called in notifier because of possible postponed operations.
         notifyAdded { dirtyIterators() }
-        notifyRemoved { dirtyIterators() }
+
+        notifyRemoved { entity ->
+            // TODO: Likely lock must be here
+            // Don't change order
+            entity.forEach { factory.freeComponent(it) }
+            factory.freeEntity(entity)
+            dirtyIterators()
+        }
     }
 
     private fun dirtyIterators() = iterators.forEach { it.dirty = true }

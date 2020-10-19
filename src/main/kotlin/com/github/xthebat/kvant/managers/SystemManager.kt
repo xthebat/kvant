@@ -11,7 +11,7 @@ internal class SystemManager : Iterable<AbstractSystem> {
     companion object {
         val log = logger(INFO)
 
-        inline fun create(initialize: SystemManager.() -> Unit) = SystemManager().apply { initialize(this) }
+        inline fun create(initialize: SystemManager.() -> Unit) = SystemManager().apply(initialize)
     }
 
     private val systems = mutableListOf<AbstractSystem>()

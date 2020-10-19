@@ -3,9 +3,9 @@ package com.github.xthebat.kvant.managers
 import com.github.xthebat.kvant.ComponentClass
 import com.github.xthebat.kvant.ObjectCallback
 import com.github.xthebat.kvant.common.FilteredIterator
+import com.github.xthebat.kvant.whileNotEmpty
 import com.github.xthebat.kvant.core.Entity
 import com.github.xthebat.kvant.managers.EntityManager.Operation
-import com.github.xthebat.kvant.whileNotEmpty
 import ru.inforion.lab403.common.logging.INFO
 import ru.inforion.lab403.common.logging.logger
 
@@ -13,7 +13,7 @@ internal class EntityManager : Iterable<Entity> {
     companion object {
         val log = logger(INFO)
 
-        inline fun create(initialize: EntityManager.() -> Unit) = EntityManager().apply { initialize(this) }
+        inline fun create(initialize: EntityManager.() -> Unit) = EntityManager().apply(initialize)
     }
 
     private fun interface Operation {

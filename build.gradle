@@ -15,12 +15,10 @@ repositories {
 
 dependencies {
     implementation group: 'org.jetbrains.kotlin', name: 'kotlin-stdlib'
+    implementation group: 'org.jetbrains.kotlin', name: 'kotlin-reflect'
     implementation group: 'org.jetbrains.kotlin', name: 'kotlin-test'
 
     implementation group: 'com.github.inforion', name: 'kotlin-logging', version: kotlinLoggingVersion
-    implementation group: 'com.github.inforion', name: 'kotlin-extensions', version: kotlinExtensionsVersion
-
-    implementation group: 'com.fasterxml.jackson.module', name: 'jackson-module-kotlin', version: jacksonVersion
 
     testImplementation group: 'junit', name: 'junit', version: junitVersion
 }
@@ -50,4 +48,16 @@ task dokkaJar(type: Jar, dependsOn: dokkaJavadoc) {
 task sourcesJar(type: Jar, dependsOn: classes) {
     classifier = 'sources'
     from sourceSets.main.allSource
+}
+
+publishing {
+    publications {
+        "$name"(MavenPublication) {
+            groupId = group
+            artifactId = name
+            version = version
+            from components.kotlin
+            artifact tasks.sourcesJar
+        }
+    }
 }
